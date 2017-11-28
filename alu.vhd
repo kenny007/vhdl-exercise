@@ -37,32 +37,30 @@ begin
 
 
     -- Here we calculate inverted bits for subtraction if necessary
-    m_inverted(0) <= not m(0);
-    m_inverted(1) <= not m(1);
-    m_inverted(2) <= not m(2);
-    m_inverted(3) <= not m(3);
+   
 
-    -- Addition
+    m_inverted <= (not m) when sub = '1' else m;
+    -- Addition 
     adder_instance: carry_ripple_adder
         port map(
             a => n,
             b => m_inverted,
-            ci => '1',
+            ci => sub,
             s => adder_result,
             co => adder_carry_out
         );
         
     -- Logical NAND operation
-    nand_result(0) <= not m(0) and n(0);
-    nand_result(1) <= not m(1) and n(1);
-    nand_result(2) <= not m(2) and n(2);
-    nand_result(3) <= not m(3) and n(3);
+    nand_result(0) <= m(0) nand n(0);
+    nand_result(1) <= m(1) nand n(1);
+    nand_result(2) <= m(2) nand n(2);
+    nand_result(3) <= m(3) nand n(3);
 
     -- Logical NOR operation
-    nor_result(0) <= not m(0) or n(0);
-    nor_result(1) <= not m(1) or n(1);
-    nor_result(2) <= not m(2) or n(2);
-    nor_result(3) <= not m(3) or n(3);
+    nor_result(0) <=  m(0) nor n(0);
+    nor_result(1) <=  m(1) nor n(1);
+    nor_result(2) <=  m(2) nor n(2);
+    nor_result(3) <= m(3) nor n(3);
 
     -- Select output based on which operation was requested
     d <=   nand_result when opcode ="10" else
